@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-dotenv
+pymilvus
+numpy
+openai
+httpx
+mmh3 
+PyGithub
+requests
+python-multipart
