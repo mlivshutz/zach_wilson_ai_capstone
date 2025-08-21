@@ -1,0 +1,56 @@
+graph TB
+    %% User Layer
+    User[👤 User] --> GoogleSheet[📊 Google Sheets<br/>Repo Management]
+    
+    %% Automation Trigger Layer
+    GoogleSheet -->|New Row Added| N8N[🔄 n8n Automation Tool<br/>Workflow Orchestrator]
+    
+    %% API Gateway Layer
+    N8N -->|HTTP Request| FastAPI[🚀 FastAPI Application<br/>index.py<br/>Port 8000]
+    WebUI[🌐 Web Interface<br/>static/index.html] --> FastAPI
+    
+    %% Databricks Async Processing
+    N8N -->|Databricks Jobs API| DBWorkflows{🧱 Databricks Workflows<br/>Async Processing}
+    DBWorkflows --> AddRepo[📦 Add GitHub Repo<br/>add_github_repo_to_zilliz.ipynb]
+    DBWorkflows --> DeleteRepo[🗑️ Delete GitHub Repo<br/>delete_github_repo_from_zilliz.ipynb]
+    
+    %% External Services
+    AddRepo -->|Fetch Code| GitHub[🐙 GitHub API<br/>Repository Source]
+    AddRepo -->|Generate Embeddings| OpenAI[🤖 OpenAI API<br/>text-embedding-3-small]
+    DeleteRepo -->|Remove Vectors| ZillizCloud
+    
+    %% Vector Database Layer
+    FastAPI -->|Store/Retrieve| ZillizCloud[☁️ Zilliz Cloud<br/>Vector Database]
+    AddRepo -->|Store Vectors| ZillizCloud
+    
+    %% Internal Components
+    ZillizCloud --> DenseIndex[📊 Dense Index<br/>github_dense_index<br/>OpenAI Embeddings]
+    ZillizCloud --> SparseIndex[📈 Sparse Index<br/>github_sparse_index<br/>BM25-like Search]
+    
+    %% RAG Components
+    FastAPI -->|Chat Queries| RAGPipeline[🔍 RAG Pipeline<br/>Retrieval + Generation]
+    RAGPipeline -->|Vector Search| ZillizCloud
+    RAGPipeline -->|Context Generation| OpenAI
+    
+    %% YouTube Processing
+    FastAPI -->|Optional| YouTubeDownloader[📺 YouTube Downloader<br/>youtube_hybrid_downloader.py<br/>Town Meeting Transcripts]
+    
+    %% Deployment
+    FastAPI -->|Deploy| Vercel[⚡ Vercel<br/>Serverless Deployment]
+    
+    %% Styling
+    classDef userLayer fill:#e1f5fe
+    classDef automationLayer fill:#f3e5f5
+    classDef apiLayer fill:#e8f5e8
+    classDef databricksLayer fill:#fff3e0
+    classDef externalLayer fill:#fce4ec
+    classDef vectorLayer fill:#f1f8e9
+    classDef deployLayer fill:#e0f2f1
+    
+    class User,GoogleSheet userLayer
+    class N8N automationLayer
+    class FastAPI,WebUI,RAGPipeline apiLayer
+    class DBWorkflows,AddRepo,DeleteRepo databricksLayer
+    class GitHub,OpenAI,YouTubeDownloader externalLayer
+    class ZillizCloud,DenseIndex,SparseIndex vectorLayer
+    class Vercel deployLayer

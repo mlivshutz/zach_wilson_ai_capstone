@@ -1,0 +1,50 @@
+C4Component
+    title System Architecture - RAG-Powered GitHub Knowledge Base
+
+    Container_Boundary(automation, "Automation Layer") {
+        Component(googlesheets, "Google Sheets", "Spreadsheet", "Repository management interface")
+        Component(n8n, "n8n Workflow", "Automation", "Orchestrates repo operations via webhooks")
+    }
+
+    Container_Boundary(processing, "Processing Layer") {
+        Component(databricks, "Databricks Workflows", "Compute", "Async GitHub repo ingestion/deletion")
+        Component(fastapi, "FastAPI Application", "Python/FastAPI", "Main API server with RAG pipeline")
+        Component(webui, "Web Interface", "HTML/JS", "Chat interface and system health")
+    }
+
+    Container_Boundary(storage, "Vector Storage Layer") {
+        Component(zilliz_dense, "Dense Vector Index", "Zilliz Cloud", "OpenAI embeddings (1536-dim)")
+        Component(zilliz_sparse, "Sparse Vector Index", "Zilliz Cloud", "BM25-like term vectors")
+    }
+
+    Container_Boundary(external, "External Services") {
+        Component(github_api, "GitHub API", "REST API", "Source code repository access")
+        Component(openai_api, "OpenAI API", "REST API", "Embeddings & chat completions")
+        Component(youtube, "YouTube Component", "Python", "Optional: Town meeting transcripts")
+    }
+
+    Container_Boundary(deployment, "Deployment") {
+        Component(vercel, "Vercel Platform", "Serverless", "FastAPI deployment target")
+    }
+
+    %% Automation Flow
+    Rel(googlesheets, n8n, "Triggers on new row", "Webhook")
+    Rel(n8n, databricks, "Triggers workflows", "Databricks Jobs API")
+
+    %% Processing Flow
+    Rel(databricks, github_api, "Fetches repo files", "GitHub API")
+    Rel(databricks, openai_api, "Generates embeddings", "REST API")
+    Rel(databricks, zilliz_dense, "Stores vectors", "PyMilvus SDK")
+    Rel(databricks, zilliz_sparse, "Stores sparse vectors", "PyMilvus SDK")
+
+    %% RAG Pipeline
+    Rel(webui, fastapi, "Chat requests", "HTTP/JSON")
+    Rel(fastapi, openai_api, "Query embeddings & chat", "REST API")
+    Rel(fastapi, zilliz_dense, "Vector similarity search", "PyMilvus SDK")
+    Rel(fastapi, zilliz_sparse, "Sparse term search", "PyMilvus SDK")
+
+    %% Optional Components
+    Rel(fastapi, youtube, "Transcript processing", "Local import")
+
+    %% Deployment
+    Rel(fastapi, vercel, "Deployed to", "Git integration")

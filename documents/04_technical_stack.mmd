@@ -1,0 +1,87 @@
+graph LR
+    subgraph "Frontend Layer"
+        HTML[HTML5 Interface<br/>static/index.html]
+        CSS[Modern CSS<br/>Responsive Design]
+        JS[Vanilla JavaScript<br/>Chat & File Upload]
+    end
+    
+    subgraph "API Layer"
+        FastAPI[FastAPI Framework<br/>async/await Support]
+        Pydantic[Pydantic Models<br/>Request/Response Validation]
+        Uvicorn[Uvicorn ASGI Server<br/>Production Ready]
+    end
+    
+    subgraph "AI/ML Stack"
+        OpenAIEmbed[OpenAI Embeddings<br/>text-embedding-3-small<br/>1536 dimensions]
+        OpenAIChat[OpenAI Chat<br/>gpt-4.1-mini<br/>RAG Generation]
+        RAGPipeline[RAG Pipeline<br/>Retrieval + Reranking]
+    end
+    
+    subgraph "Vector Database"
+        ZillizCloud[Zilliz Cloud<br/>Managed Milvus]
+        DenseVectors[Dense Vectors<br/>COSINE similarity<br/>IVF_FLAT index]
+        SparseVectors[Sparse Vectors<br/>IP similarity<br/>SPARSE_INVERTED_INDEX]
+    end
+    
+    subgraph "Data Processing"
+        DatabrProc[Databricks Notebooks<br/>Distributed Processing]
+        GitHubAPI[GitHub API<br/>PyGithub Library]
+        TextChunk[Text Chunking<br/>2000 chars + 200 overlap]
+        MMH3Hash[MMH3 Hashing<br/>Document IDs]
+    end
+    
+    subgraph "Automation"
+        GoogleSheets[Google Sheets<br/>Repo Management UI]
+        N8NWorkflow[n8n Workflows<br/>Event-Driven Automation]
+        DatabrJobs[Databricks Jobs API<br/>Async Execution]
+    end
+    
+    subgraph "Deployment"
+        VercelDeploy[Vercel Deployment<br/>Serverless Python]
+        EnvConfig[Environment Config<br/>.env + python-dotenv]
+        Requirements[Python Dependencies<br/>requirements.txt]
+    end
+    
+    subgraph "Development Tools"
+        Python[Python 3.11+<br/>Async Programming]
+        HTTPClient[httpx Library<br/>Async HTTP Client]
+        Logging[Python Logging<br/>Request Tracing]
+    end
+    
+    %% Connections
+    HTML --> FastAPI
+    FastAPI --> OpenAIEmbed
+    FastAPI --> ZillizCloud
+    FastAPI --> RAGPipeline
+    
+    DatabrProc --> GitHubAPI
+    DatabrProc --> OpenAIEmbed
+    DatabrProc --> ZillizCloud
+    
+    GoogleSheets --> N8NWorkflow
+    N8NWorkflow --> DatabrJobs
+    DatabrJobs --> DatabrProc
+    
+    ZillizCloud --> DenseVectors
+    ZillizCloud --> SparseVectors
+    
+    FastAPI --> VercelDeploy
+    
+    %% Styling
+    classDef frontend fill:#e3f2fd
+    classDef api fill:#e8f5e8
+    classDef ai fill:#fff3e0
+    classDef vector fill:#f3e5f5
+    classDef processing fill:#fce4ec
+    classDef automation fill:#e0f2f1
+    classDef deployment fill:#f1f8e9
+    classDef tools fill:#e8eaf6
+    
+    class HTML,CSS,JS frontend
+    class FastAPI,Pydantic,Uvicorn api
+    class OpenAIEmbed,OpenAIChat,RAGPipeline ai
+    class ZillizCloud,DenseVectors,SparseVectors vector
+    class DatabrProc,GitHubAPI,TextChunk,MMH3Hash processing
+    class GoogleSheets,N8NWorkflow,DatabrJobs automation
+    class VercelDeploy,EnvConfig,Requirements deployment
+    class Python,HTTPClient,Logging tools

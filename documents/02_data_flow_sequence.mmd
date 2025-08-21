@@ -1,0 +1,75 @@
+sequenceDiagram
+    participant User as 👤 User
+    participant GSheet as 📊 Google Sheets
+    participant N8N as 🔄 n8n Automation
+    participant FastAPI as 🚀 FastAPI App
+    participant Databricks as 🧱 Databricks
+    participant GitHub as 🐙 GitHub API
+    participant OpenAI as 🤖 OpenAI API
+    participant Zilliz as ☁️ Zilliz Cloud
+    participant WebUI as 🌐 Web Interface
+    
+    %% Repository Addition Flow
+    Note over User,Zilliz: GitHub Repository Addition Workflow
+    User->>GSheet: Add new repo row<br/>(owner/repo format)
+    GSheet->>N8N: Trigger webhook<br/>(new row detected)
+    N8N->>Databricks: POST /api/2.1/jobs/run-now<br/>job_id: add_github_repo
+    
+    activate Databricks
+    Databricks->>GitHub: Fetch repository files<br/>(.py, .md, .sql, .yml)
+    GitHub-->>Databricks: Return file contents
+    
+    loop For each file chunk
+        Databricks->>OpenAI: Generate embeddings<br/>text-embedding-3-small
+        OpenAI-->>Databricks: Return 1536-dim vectors
+        Databricks->>Zilliz: Insert to dense index<br/>(embeddings + metadata)
+        Databricks->>Zilliz: Insert to sparse index<br/>(BM25-like tokens)
+    end
+    deactivate Databricks
+    
+    Databricks-->>N8N: Job completion status
+    N8N-->>User: Notification (optional)
+    
+    %% Repository Deletion Flow
+    Note over User,Zilliz: GitHub Repository Deletion Workflow
+    User->>GSheet: Add delete request row
+    GSheet->>N8N: Trigger webhook
+    N8N->>Databricks: POST /api/2.1/jobs/run-now<br/>job_id: delete_github_repo
+    
+    activate Databricks
+    Databricks->>Zilliz: Query for repo entries<br/>repo == 'owner/repo'
+    Zilliz-->>Databricks: Return matching IDs
+    Databricks->>Zilliz: Delete from dense index
+    Databricks->>Zilliz: Delete from sparse index
+    Databricks->>Zilliz: Flush changes
+    deactivate Databricks
+    
+    Databricks-->>N8N: Deletion completion
+    
+    %% User Chat Flow
+    Note over User,Zilliz: RAG-Powered Chat Interaction
+    User->>WebUI: Ask question via chat
+    WebUI->>FastAPI: POST /ask<br/>{"message": "query"}
+    
+    activate FastAPI
+    FastAPI->>OpenAI: Generate query embedding
+    OpenAI-->>FastAPI: Return query vector
+    
+    par Dense Retrieval
+        FastAPI->>Zilliz: Vector search (dense)<br/>COSINE similarity
+        Zilliz-->>FastAPI: Top-5 similar docs
+    and Sparse Retrieval
+        FastAPI->>Zilliz: Sparse search (BM25)<br/>IP similarity
+        Zilliz-->>FastAPI: Top-5 relevant docs
+    end
+    
+    FastAPI->>FastAPI: Combine & deduplicate results
+    FastAPI->>OpenAI: Re-rank documents<br/>LLM-based scoring
+    OpenAI-->>FastAPI: Relevance scores
+    
+    FastAPI->>OpenAI: Generate RAG response<br/>query + context
+    OpenAI-->>FastAPI: Final answer + sources
+    deactivate FastAPI
+    
+    FastAPI-->>WebUI: Response with sources
+    WebUI-->>User: Display answer + attribution
