@@ -1,0 +1,106 @@
+{
+  "name": "AI Bootcamp capstone",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1ufzFUw_v3vQ4Ff0BpD5cmFY8pttpOKkNM7Emye-p0m0",
+          "mode": "list",
+          "cachedResultName": "n8n automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ufzFUw_v3vQ4Ff0BpD5cmFY8pttpOKkNM7Emye-p0m0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ufzFUw_v3vQ4Ff0BpD5cmFY8pttpOKkNM7Emye-p0m0/edit#gid=0"
+        },
+        "options": {
+          "columnsToWatch": [],
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "specifyRangeA1",
+              "range": "A1:A2"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e5daedeb-2d8b-4d5b-9edb-9ac377585d37",
+      "name": "Google Sheets Trigger",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "2rlEu6EpJDKzV1GG",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://adb-213630856784818.18.azuredatabricks.net/api/2.1/jobs/run-now",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=\n{ \"job_id\": 34546274536688,\n  \"notebook_params\": {\n    \"repo\": \"{{ $json.repo }}\"\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2d7799dc-cf1e-4060-84c8-93403fb42dc7",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "PkMV2mN2GleJNUhV",
+          "name": "Bearer Auth account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2b7d6b3f-afde-4ce7-b4f8-67ba6874d07c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e82dfa274012fbaf52646dce2bea374f935878bc93ca23740724f7c748114329"
+  },
+  "id": "nL94UKmhfHAlckHs",
+  "tags": []
+}
