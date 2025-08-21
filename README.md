@@ -4,6 +4,10 @@
 
 An intelligent, event-driven system that automatically ingests GitHub repositories into a vector database and provides RAG-powered chat capabilities. The system uses Google Sheets as a user interface, n8n for automation, Databricks for processing, and Zilliz Cloud for vector storage.
 
+## 📦 Source Code
+
+The complete source code for this system is available at: [https://github.com/mlivshutz/zach_wilson_ai_capstone.git](https://github.com/mlivshutz/zach_wilson_ai_capstone.git)
+
 ## 🏗️ System Architecture
 
 ### Core Components
