@@ -1,0 +1,29 @@
+resources:
+  jobs:
+    delete_github_repo_from_zilliz:
+      name: delete_github_repo_from_zilliz
+      email_notifications:
+        on_start:
+          - mlivshutz@outlook.com
+          - mlivshutz@gmail.com
+        on_success:
+          - mlivshutz@outlook.com
+          - mlivshutz@gmail.com
+        on_failure:
+          - mlivshutz@outlook.com
+          - mlivshutz@gmail.com
+      trigger:
+        pause_status: PAUSED
+        periodic:
+          interval: 1
+          unit: DAYS
+      tasks:
+        - task_key: delete_github_repo_from_zilliz
+          notebook_task:
+            notebook_path: /Workspace/Users/mlivshutz@outlook.com/zach_wilson_ai_capstone/Databricks_notebooks/delete_github_repo_from_zilliz
+            base_parameters:
+              repo: mlivshutz/GenAI-In-Production-Databricks-FEB
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED

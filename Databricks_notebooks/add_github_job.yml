@@ -1,0 +1,29 @@
+resources:
+  jobs:
+    add_github_repo_to_zilliz:
+      name: add_github_repo_to_zilliz
+      email_notifications:
+        on_start:
+          - mlivshutz@outlook.com
+          - mlivshutz@gmail.com
+        on_success:
+          - mlivshutz@outlook.com
+          - mlivshutz@gmail.com
+        on_failure:
+          - mlivshutz@outlook.com
+          - mlivshutz@gmail.com
+      trigger:
+        pause_status: PAUSED
+        periodic:
+          interval: 1
+          unit: DAYS
+      tasks:
+        - task_key: add_github_repo_to_zilliz
+          notebook_task:
+            notebook_path: /Workspace/Users/mlivshutz@outlook.com/zach_wilson_ai_capstone/Databricks_notebooks/add_github_repo_to_zilliz
+            base_parameters:
+              repo: mlivshutz/GenAI-In-Production-Databricks-FEB
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
